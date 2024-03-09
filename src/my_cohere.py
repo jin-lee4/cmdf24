@@ -26,7 +26,10 @@ class MyCohere:
     return summary_text
 
 
-sample_text=(
+if __name__ == "__main__":
+  my_cohere = MyCohere()
+
+  sample_text=(
   "Ice cream is a sweetened frozen food typically eaten as a snack or dessert. "
   "It may be made from milk or cream and is flavoured with a sweetener, "
   "either sugar or an alternative, and a spice, such as cocoa or vanilla, "
@@ -47,5 +50,10 @@ sample_text=(
   "such as goat's or sheep's milk, or milk substitutes "
   "(e.g., soy, cashew, coconut, almond milk or tofu), are available for those who are "
   "lactose intolerant, allergic to dairy protein or vegan."
-)
+  )
+
+  # test summarize chat function
+  summary_text = my_cohere.summarize_chat(sample_text, date_range="last 7 days")
+  print(summary_text)
+
 
