@@ -1,13 +1,17 @@
 import cohere
+import os
+from dotenv import load_dotenv
+
+load_dotenv(".env")
 
 class MyCohere:
   """
   A class of functions using the Cohere API
   """
   def __init__(self):
-    self.co = cohere.Client('p1uXN7nDABSGatQQVL8aMeEn40xUoDK2pGbuCa1q')
+    self.co = cohere.Client(os.environ.get('COHERE_KEY'))
 
-  def summarize_chat(self, text: str, date_range):
+  def summarize_chat(self, chat_text: str, date_range) -> str:
     """
     Summarize chat messages
     Args:
@@ -20,12 +24,37 @@ class MyCohere:
     ## CODE HERE ##
 
     # Call the summarize method from the cohere client
-    response = self.co.summarize(text=sample_text, length="medium", format="bullets", extractiveness="auto" )
+    response = self.co.summarize(text=chat_text, length="medium", format="bullets", extractiveness="auto" )
     # Extract the summarized text from the response tuple (id, summarised text, meta)
     summary_text = response[1]
     return summary_text
 
+  def create_suggested_text(self, last_message: str, sender: str, recipient: str, sender_name: str, recipient_name: str) -> str:
+    """
+    Create a suggested response based on the last message
 
+    Args:
+    - last_message (str): the last message in the chat
+    - sender (str): the potential sender of the suggested text (either 'mentor' or 'mentee')
+    - recipient (str): the potential sender of the suggested text (either 'mentor' or 'mentee')
+    
+    Returns:
+    - suggested_response (str): the suggested response based on the last message
+    """
+    # Construct the prompt using the last message, sender, and recipient information
+    my_prompt = f"Based on the last message from a {recipient} named {recipient_name}, please suggest a response: {last_message} in the perspective of a {sender} called {sender_name}."
+    
+    # Generate a response based on the prompt
+    generate_output = self.co.generate(prompt=my_prompt)
+    
+    # Access the first generated response and extract the text
+    suggested_response = generate_output[0].text
+    
+    # Return the suggested response
+    return suggested_response
+
+
+# TESTING
 if __name__ == "__main__":
   my_cohere = MyCohere()
 
@@ -53,7 +82,12 @@ if __name__ == "__main__":
   )
 
   # test summarize chat function
-  summary_text = my_cohere.summarize_chat(sample_text, date_range="last 7 days")
-  print(summary_text)
+  # summary_text = my_cohere.summarize_chat(sample_text, date_range="last 7 days")
+  # print(summary_text)
+
+  # test create suggested text function
+  last_message = "I am Nadia, a final year computer science student and I am interested in AI. I would love to chat with you as a mentee."
+  suggested_response = my_cohere.create_suggested_text(last_message, sender="mentor", recipient="mentee", sender_name="John", recipient_name="Nadia")
+  print(suggested_response)
 
 
