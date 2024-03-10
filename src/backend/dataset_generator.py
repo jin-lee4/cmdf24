@@ -14,9 +14,15 @@ def generate_specialties_paragraph():
         "Familiar with agile methodologies and project management tools.",
         "Experienced in network administration and troubleshooting.",
         "Proficient in DevOps practices and continuous integration/continuous deployment (CI/CD).",
-        "Skilled in UI/UX design and creating engaging user experiences."
+        "Skilled in UI/UX design and creating engaging user experiences.",
+        "Specializes in mentoring BIPOC individuals and providing support for underrepresented groups.",
+        "Passionate about helping LGBTQ+ individuals navigate the tech industry and providing a safe space for all identities.",
+        "Dedicated to supporting first-generation college students in their career development and academic journey.",
+        "Experienced in mentoring individuals with disabilities and advocating for inclusive practices in tech.",
+        "Skilled in guiding veterans transitioning into the tech industry and providing resources for a successful career change."
     ]
     return random.choice(specialties)
+
 
 # Function to generate a paragraph of text for interests
 def generate_interests_paragraph():
@@ -69,6 +75,14 @@ def generate_random_location():
     country = random.choice(countries)
     return f"{state}, {country}"
 
+def generate_self_identifications():
+    identifications = [
+        "BIPOC", "LGBTQ+", "Disabled", "First-generation college student", "Non-binary", "Transgender", "Veteran", "Single parent", "Caregiver"
+    ]
+    num_identifications = random.randint(1, 3)  # Generate a random number of identifications (1 to 3)
+    return random.sample(identifications, num_identifications)  # Randomly select identifications from the list
+
+# Function to generate a dataset
 def generate_users_dataset(num_users):
     dataset = []
     for i in range(num_users):
@@ -81,21 +95,20 @@ def generate_users_dataset(num_users):
         social_media_links = ["facebook.com/johndoe", "twitter.com/johndoe"]
         specialties = generate_specialties_paragraph() if random.random() > 0.5 else None
         interests = generate_interests_paragraph() if random.random() > 0.5 else None
+        self_identifications = generate_self_identifications() if random.random() > 0.5 else []
         
-        # Ensure that every user has at least one of specialty or interest
-        if not specialties and not interests:
-            if random.random() > 0.5:
-                specialties = generate_specialties_paragraph()
-            else:
-                interests = generate_interests_paragraph()
-        
-        user_data = (user_id_email, [password, first_name, last_name, profile_pic, location, social_media_links, specialties, interests])
+        user_data = (user_id_email, [password, first_name, last_name, profile_pic, location, social_media_links, specialties, interests, self_identifications])
         dataset.append(user_data)
     return dataset
 
+# Function to generate a list of self-identifications
+def generate_self_identifications():
+    identities = ["BIPOC", "LGBTQ+", "First-generation college student", "Individual with disabilities", "Veteran"]
+    num_identities = random.randint(1, len(identities))
+    return random.sample(identities, num_identities)
 
 # Generate a dataset of users
-num_users = 100
+num_users = 50
 users_dataset = generate_users_dataset(num_users)
 
 # Print the dataset
@@ -104,9 +117,12 @@ for user_data in users_dataset:
 
 if __name__ == "__main__":
     user_db = UserDB()
+    my_db = user_db.getDb()
+    my_db.drop_collection("users")
+
     for user_data in users_dataset:
         user_id_email, data = user_data
-        password, first_name, last_name, profile_pic, location, social_media_links, specialties, interests = data
+        password, first_name, last_name, profile_pic, location, social_media_links, specialties, interests, self_identifications = data
         name = f"{first_name} {last_name}"
         email = user_id_email
         user_db.add_user(name, email, password)
@@ -114,3 +130,7 @@ if __name__ == "__main__":
             user_db.make_mentor_profile(user_db.get_id(email), specialties)
         if interests:
             user_db.make_mentee_profile(user_db.get_id(email), interests)
+        if self_identifications:
+            user_db.add_field(user_db.get_id(email), "self identifications", self_identifications)
+        if social_media_links:
+            user_db.add_field(user_db.get_id(email), "social media", social_media_links)
