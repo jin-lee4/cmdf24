@@ -140,6 +140,9 @@ class UserDB(DbFunctions):
             col = self.menteeProfiles
         try:
             user = col.find_one({"_id": id})
+            user_identify = self.userCollection.find_one({"_id": id})
+            if user_identify is None:
+                return user["preferences"]
             return user["preferences"] + user["self identification"]
         except pymongo.errors.OperationFailure:
             print(
