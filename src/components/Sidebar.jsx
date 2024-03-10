@@ -11,14 +11,14 @@ function DashboardPanel() {
       >
         <div className="h-full px-10 py-4 text-white text-2xl space-y-5">
           <a
-            href="https://flowbite.com/"
+            href="/"
             className="flex items-center ps-2.5 mb-5"
           >
             <Logo />
           </a>
           <ul className="space-y-2 font-medium text-white">
             <li>
-              <a href="#" className="flex items-center p-2">
+              <a href="/dashboard" className="flex items-center p-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="26"
@@ -35,7 +35,7 @@ function DashboardPanel() {
               </a>
             </li>
             <li>
-              <a href="#" className="flex items-center p-2">
+              <a href="/chat" className="flex items-center p-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -52,7 +52,7 @@ function DashboardPanel() {
               </a>
             </li>
             <li>
-              <a href="#" className="flex items-center p-2">
+              <a href="/connect" className="flex items-center p-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="28"
@@ -69,7 +69,7 @@ function DashboardPanel() {
               </a>
             </li>
             <li>
-              <a href="#" className="flex items-center p-2">
+              <a href="/insights" className="flex items-center p-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="28"

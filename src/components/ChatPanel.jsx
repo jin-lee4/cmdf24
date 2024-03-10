@@ -7,15 +7,15 @@ function ChatPanel() {
     <section className="py-10 fixed top-0 right-0">
       <div className="flex justify-end px-10 space-x-4">
         <div className="space-y-2">
-          <h3 className={styles.profilename}>Your Name</h3>
-          <p className={styles.profile}>Your Profile</p>
+          <h3 className={styles.profilename}>Josh Cheng</h3>
+          <p className={styles.profile}>VIew Profile</p>
         </div>
         <div className={styles.profileimage}>
-          {/* <Image
-            src={"/public/images/profile.png"}
+          <Image
+            src={"/images/profile.png"}
             width="32"
             height="32"
-          ></Image> */}
+          ></Image>
         </div>
       </div>
       <div className="my-5 space-y-7 justify-start px-5 w-80">

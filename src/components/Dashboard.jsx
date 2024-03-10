@@ -1,5 +1,6 @@
 import panel from "@/app/styles/panel.module.css";
 import styles from "../app/styles/dashboardpanel.module.css";
+import Image from "next/image";
 import MatchSpotlight from '@/components/ConnectionSpotlight'
 
 function Dashboard() {
@@ -17,7 +18,6 @@ function Dashboard() {
           <div className={styles.box}>
             <h2 className="top-0 right-0 text-base w-100">Connection Spotlight</h2>
             <div className="items-center">
-              <MatchSpotlight />
             </div>
           </div>
         </div>

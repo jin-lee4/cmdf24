@@ -1,5 +1,5 @@
 export default function InsightsLayout({children}) {
     return (
-        <section>{children}</section>
+        <section className="min-h-screen">{children}</section>
     )
 }
