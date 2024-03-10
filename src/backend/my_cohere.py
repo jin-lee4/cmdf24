@@ -1,3 +1,4 @@
+import random
 from bson import ObjectId
 import cohere
 import os
@@ -80,6 +81,7 @@ class MyCohere:
     
     # Initialize an empty list to store the matches
     matches = []
+    users_list = []
     
     # If the user is a mentor
     if user_type == "mentor":
@@ -87,9 +89,9 @@ class MyCohere:
         mentees_list = self.userDB.get_profiles("mentee")
         for mentee in mentees_list:
             # Get the interest of the mentee string
-            mentee_preferences = self.userDB.get_preferences(mentee["_id"])
-            # add the mentee id and their interests to a dictionary
-            user_dict = {"id": mentee["_id"], "preferences": mentee_preferences}
+            mentee_preferences = self.userDB.get_preferences(mentee, "mentee")
+            # add the mentee id and their interests to a list of users in tuple form (mentee_id, mentee_interests)
+            users_list.append((mentee, mentee_preferences))
 
     
     # If the user is a mentee
@@ -99,11 +101,11 @@ class MyCohere:
         # Iterate over all mentors
         for mentor in mentors:
             # Get the specialty of the mentor (string)
-            mentor_preferences = self.userDB.get_preferences(mentor["_id"])
-            # add the mentor id and their specialties to a dictionary
-            user_dict = {"id": mentor["_id"], "preferences": mentor_preferences}
+            mentor_preferences = self.userDB.get_preferences(mentor, "mentor")
+            # add the mentor id and their specialties to a list of matches in tuple form (mentor_id, mentor_specialties)
+            users_list.append((mentor, mentee_preferences))
 
-    prompt = f"Based on the preferences of the user {user_preferences}, please find a couple of matches from {user_dict}. Stricly return a list of user ids only."
+    prompt = f"Based on the preferences of the user {user_preferences}, please find a couple of matches from {users_list}. every tuple is (user_id, specialties/interest) Stricly return a list of user ids only."
     matches = self.co.generate(prompt=prompt)
     
     # Return the list of matches
@@ -124,9 +126,13 @@ if __name__ == "__main__":
   # print(suggested_response)
 
   # test user matching function
-  user_id = ObjectId("6159f6e4e7f9f5d3f3c1d5f0")
-  print(mongo.get_preferences(user_id, "mentor"))
+  # Get all user profiles
+  user_profiles = mongo.get_profiles("mentor")
+
+  # Select a random user_id from user_profiles
+  random_user_id = random.choice(user_profiles)
+  print(mongo.get_preferences(random_user_id, "mentor"))
   user_type = "mentor"
-  matches = my_cohere.user_matching(user_id, user_type)
-  print("Matchees: {matches}")
+  matches = my_cohere.user_matching(random_user_id, user_type)
+  print(f"Matchees: {matches}")
 

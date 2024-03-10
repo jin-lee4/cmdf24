@@ -108,7 +108,7 @@ def generate_self_identifications():
     return random.sample(identities, num_identities)
 
 # Generate a dataset of users
-num_users = 100
+num_users = 50
 users_dataset = generate_users_dataset(num_users)
 
 # Print the dataset
@@ -117,6 +117,9 @@ for user_data in users_dataset:
 
 if __name__ == "__main__":
     user_db = UserDB()
+    my_db = user_db.getDb()
+    my_db.drop_collection("users")
+
     for user_data in users_dataset:
         user_id_email, data = user_data
         password, first_name, last_name, profile_pic, location, social_media_links, specialties, interests, self_identifications = data
