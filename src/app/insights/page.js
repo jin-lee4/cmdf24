@@ -18,7 +18,15 @@ export default function Insights() {
                     <li>Networking Advice: Marvin provided specific strategies for Josh to expand his professional network effectively.</li>
                 </ol>
           </div>
-          <div className={styles.box}></div>
+          <div className={styles.box}>
+          <p className={styles.title}>Marvin's Insights</p>
+            <p className={styles.insights}></p>
+                <ol>
+                    <li>Marvin's Insights: Offered deep industry knowledge, focusing on emerging trends Josh could leverage.</li>
+                    <li>Professional Goals: Josh outlined his career aspirations with Marvin suggesting a tailored action plan for growth.</li>
+                    <li>Networking Advice: Marvin provided specific strategies for Josh to expand his professional network effectively.</li>
+                </ol>
+          </div>
         </div>
       </div>
       </div>
