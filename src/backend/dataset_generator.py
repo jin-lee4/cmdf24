@@ -1,6 +1,6 @@
 import random
 import string
-from chat_db_functions import ChatDb
+from chat_db_functions import ChatDB
 from user_db_functions import *
 from message_generator import *
 

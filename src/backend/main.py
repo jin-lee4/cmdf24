@@ -5,13 +5,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from user_db_functions import UserDB
 from my_cohere import MyCohere
-from chat_db_functions import ChatDb
+from chat_db_functions import ChatDB
 
 app = Flask(__name__)
 CORS(app)
 
 user_db = UserDB()
-chat_db = ChatDb()
+chat_db = ChatDB()
 cohere_ai = MyCohere()
 
 
