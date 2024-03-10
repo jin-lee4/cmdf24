@@ -1,6 +1,8 @@
 import random
 import string
+from chat_db_functions import ChatDb
 from user_db_functions import *
+from message_generator import *
 
 # Function to generate a paragraph of text for specialties
 def generate_specialties_paragraph():
@@ -84,6 +86,11 @@ def generate_self_identifications():
 
 # Function to generate a dataset
 def generate_users_dataset(num_users):
+    """
+    Generate a dataset of users with random information
+    :param num_users: number of users to generate
+    :return: list of user data
+    """
     dataset = []
     for i in range(num_users):
         user_id_email = f"user_{i}@example.com"
@@ -107,18 +114,22 @@ def generate_self_identifications():
     num_identities = random.randint(1, len(identities))
     return random.sample(identities, num_identities)
 
-# Generate a dataset of users
-num_users = 10
-users_dataset = generate_users_dataset(num_users)
 
-# Print the dataset
-for user_data in users_dataset:
-    print(user_data)
 
 if __name__ == "__main__":
     user_db = UserDB()
+    chat_db = ChatDb()
     my_db = user_db.getDb()
     my_db.drop_collection("users")
+
+    # Generate a dataset of users
+    num_users = 10
+    users_dataset = generate_users_dataset(num_users)
+    print(users_dataset)
+
+    # Print the dataset
+    for user_data in users_dataset:
+        print(user_data)
 
     for user_data in users_dataset:
         user_id_email, data = user_data
@@ -132,3 +143,18 @@ if __name__ == "__main__":
             user_db.make_mentee_profile(user_db.get_id(email), interests)
         if self_identifications:
             user_db.update_self_identification(user_db.get_id(email), self_identifications)
+
+    # Generate fake conversations between users
+    fake_conversations = []
+    for i in range(len(users_dataset)):
+        for j in range(i+1, len(users_dataset)):
+            user1 = users_dataset[i][0]
+            user2 = users_dataset[j][0]
+            fake_messages = generate_fake_conversation(chat_db, user1, user2)
+            fake_conversations.append({"user1": user1, "user2": user2, "messages": fake_messages})
+
+    # Print the fake conversations
+    for conversation in fake_conversations:
+        print(f"Conversation between {conversation['user1']} and {conversation['user2']}:")
+        for message in conversation['messages']:
+            print(f"\t{message['message_date']}: {message['message']}")
