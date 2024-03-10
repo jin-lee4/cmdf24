@@ -1,18 +1,39 @@
 .panel {
-    border-radius: 32px 0px 0px 32px;
-    background: #EFF3FA;
-    width: 785px;
-    height: 832px;
-    align-items: center;
+  border-radius: 32px 0px 0px 32px;
+  background: linear-gradient(161deg, #eff3fa 7.02%, #d8d6f6 165.01%);
+  width: 80%;
+  height: 100vh;
+  align-items: center;
+  top: 0;
+  right: 0;
+  position: fixed;
 }
 
 .loginheading {
-    color: var(--dark);
-    text-align: center;
-    font-family: "DM Sans", sans-serif;
-    font-size: 36px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    margin-top: 135px;
+  color: var(--dark);
+  text-align: center;
+  font-family: "DM Sans", sans-serif;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-top: 135px;
+}
+
+.button {
+  display: flex;
+  width: 170px;
+  height: 55px;
+  padding: 13px 34px 8px 35px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #f0c28e;
+  color: var(--Text, #161b4b);
+  font-family: Inter, sans-serif;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
