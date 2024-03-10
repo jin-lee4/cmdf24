@@ -1,0 +1,9 @@
+.panel {
+  border-radius: 32px 0px 0px 0px;
+  background: #eff3fa;
+  height: 100vh;
+  width: 70%;
+  align-items: center;
+  margin-left: 300px;
+  margin-top: 32px;
+}

@@ -1,8 +1,13 @@
-import DashboardPanel from "@/components/DashboardPanel";
+import Sidebar from "@/components/Sidebar";
+import DashboardContent from "@/components/Dashboard";
+import ChatPanel from "@/components/ChatPanel";
+
 export default function Dashboard() {
   return (
     <section>
-      <DashboardPanel />
+      <Sidebar />
+      <DashboardContent />
+      <ChatPanel />
     </section>
   );
 }

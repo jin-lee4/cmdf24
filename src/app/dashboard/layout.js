@@ -1,5 +1,3 @@
-export default function DashboardLayout({children}) {
-    return (
-        <section>{children}</section>
-    )
+export default function DashboardLayout({ children }) {
+  return <section className="min-h-screen">{children}</section>;
 }
