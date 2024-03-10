@@ -147,6 +147,29 @@ class UserDB(DbFunctions):
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
+    def pair_up(self, user_id, id, type):
+        if type == "mentor":
+            str = "mentors"
+        else:
+            str = "mentees"
+        try:
+            self.userCollection.find_one_and_update({"_id": user_id}, {"$addToSet": {str: id}})
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
+    def get_all_pairs(self, user_id, pair_type):
+        if pair_type == "mentor":
+            str = "mentors"
+        else:
+            str = "mentees"
+        try:
+            user = self.userCollection.find_one({"_id": user_id})
+            return user[str]
+        except pymongo.errors.OperationFailure:
+            print("Error.")
+            sys.exit(1)
 
     def get_preferences(self, id, type):
         """

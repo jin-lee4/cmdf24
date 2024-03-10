@@ -14,6 +14,7 @@ class ChatDb(DbFunctions):
     def __init__(self):
         super().__init__()
         self.messages = self.db["messages"]
+        self.chats = self.db["chats"]
 
     def add_message(self, message, msg_from, msg_to):
         """
@@ -32,6 +33,20 @@ class ChatDb(DbFunctions):
                     "message_dateTime": datetime.now()
                 }
             )
+            self.chats.insert_one(
+                {
+                    "from": msg_from,
+                    "to": msg_to
+                }
+            )
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
+    def add_summary(self, msg_from, msg_to, summary):
+        try:
+            self.chats.find_one_and_update({"from": msg_from, "to": msg_to}, {"$addToSet": {"summaries": summary}})
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
@@ -63,6 +78,16 @@ class ChatDb(DbFunctions):
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
+
+    def get_summaries(self, msg_from):
+        try:
+            summaries = self.chats.find({"message_from": msg_from}, {"summaries": 1, "_id": 0})
+            return summaries
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
 
 # Testing
 if __name__ == "__main__":
