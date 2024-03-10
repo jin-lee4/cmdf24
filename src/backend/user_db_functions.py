@@ -10,6 +10,8 @@ class UserDB(DbFunctions):
     def __init__(self):
         super().__init__()
         self.userCollection = self.db["users"]
+        self.mentorProfiles = self.db["mentorProfiles"]
+        self.menteeProfiles = self.db["menteeProfiles"]
 
     def add_user(self, name, email, password):
         """
@@ -75,27 +77,10 @@ class UserDB(DbFunctions):
 
     def update_self_identification(self, user_id, self_id):
         """
-        updates self_identification field, adds if doesn't exist
-        :param user_id: ObjectId of user
-        :param self_id: self identification (List)
-        :return: None
+
         """
         try:
             self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {"self-idenfication": self_id}})
-        except pymongo.errors.OperationFailure:
-            print(
-                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
-            sys.exit(1)
-
-    def add_field(self, user_id, name, field):
-        """
-        adds field to user, updates it if already exists
-        :param user_id: ObjectId of user
-        :param name: name of field
-        :param field: field value
-        """
-        try:
-            self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {name: field}})
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
@@ -109,10 +94,13 @@ class UserDB(DbFunctions):
         :return: None
         """
         try:
-            self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {"specialties": preferences}})
+            self.mentorProfiles.insert_one({
+                "_id": user_id,
+                "specialties": preferences
+            })
         except pymongo.errors.OperationFailure:
             print(
-                    "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
     def make_mentee_profile(self, user_id, preferences):
@@ -123,11 +111,13 @@ class UserDB(DbFunctions):
         :return: None
         """
         try:
-            self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {"interests": preferences}})
+            self.menteeProfiles.insert_one({
+                "_id": user_id,
+                "interests": preferences
+            })
         except pymongo.errors.OperationFailure:
             print(
-                "An authentication error was received. Are you sure your database user is authorized to perform write operations?"
-            )
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
     def get_profiles(self, type):
@@ -136,11 +126,11 @@ class UserDB(DbFunctions):
         :param type: String; either "mentor" or "mentee".
         """
         if type == "mentor":
-            string = "specialties"
+            col = self.mentorProfiles
         else:
-            string = "interests"
+            col = self.menteeProfiles
         try:
-            profiles = self.userCollection.distinct("_id", {string: {"$ne": None}})
+            profiles = col.distinct("_id", {})
             return profiles
         except pymongo.errors.OperationFailure:
             print(
@@ -179,21 +169,14 @@ class UserDB(DbFunctions):
         :return: preferences
         """
         if type == "mentor":
-            string = "specialties"
+            col = self.mentorProfiles
+            preferences_field = "specialties"
         else:
-            string = "interests"
+            col = self.menteeProfiles
+            preferences_field = "interests"
         try:
-            user = self.userCollection.find_one({"_id": id})
-            user_identify = user["self identification"]
-            user_preference = user[string]
-            if user_identify is None and user_preference is None:
-                return ""
-            elif user_preference is None:
-                return user_identify
-            elif user_identify is None:
-                return user_preference
-            else:
-                return user_preference + user_identify
+            user = col.find_one({"_id": id})
+            return user.get(preferences_field)
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
@@ -203,4 +186,5 @@ class UserDB(DbFunctions):
 
 if __name__ == "__main__":
     user = UserDB()
+    user.add_user("user1", "<EMAIL>", "passwrod")
     print(user.get_profiles("mentor"))

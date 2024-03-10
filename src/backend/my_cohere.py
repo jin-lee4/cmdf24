@@ -103,12 +103,33 @@ class MyCohere:
             # Get the specialty of the mentor (string)
             mentor_preferences = self.userDB.get_preferences(mentor, "mentor")
             # add the mentor id and their specialties to a list of matches in tuple form (mentor_id, mentor_specialties)
-            users_list.append((mentor, mentee_preferences))
+            users_list.append((mentor, mentor_preferences))
 
-    prompt = f"Based on the preferences of the user {user_preferences}, please find a couple of matches from {users_list}. every tuple is (user_id, specialties/interest) Stricly return a list of user ids only."
-    matches = self.co.generate(prompt=prompt)
+    # prompt = f"Based on the preferences of the user {user_preferences}, please find a couple of matches 
+    # from {users_list}. every tuple is (user_id, specialties/interest). Generate the response stricly in
+    #   this format [user_id1, user_id2, user_id3, ...]. Don't include any other information or say anything"
     
-    # Return the list of matches
+    prompt = f"Based on the preferences of the user {user_preferences}, please find a couple of matches from "
+    prompt += "[" + ", ".join([f'{user[0]}' for user in users_list]) + "]. "
+    prompt += "Every tuple is (user_id, specialties/interest). "
+    prompt += "Generate the response strictly in this format [user_id1, user_id2, user_id3, ...]. "
+    prompt += "Don't include any other information or say anything."
+
+    # Current limitations: cant take more than 4081 tokens in the prompt
+    # matches = self.co.generate(prompt=prompt, max_tokens=10000, stream=True)
+    results = self.co.generate(prompt=prompt)
+    generated_response = results[0].text
+
+    # Check if the generated response is a list but in string form
+    if generated_response.startswith("[") and generated_response.endswith("]"):
+        # Convert the string to a list
+        matches = eval(generated_response)
+    else:
+        # Otherwise, assume the generated response is already a list
+        matches = generated_response
+
+
+
     return matches
    
 # TESTING
@@ -131,8 +152,8 @@ if __name__ == "__main__":
 
   # Select a random user_id from user_profiles
   random_user_id = random.choice(user_profiles)
-  print(mongo.get_preferences(random_user_id, "mentor"))
+  # print(mongo.get_preferences(random_user_id, "mentor"))
   user_type = "mentor"
   matches = my_cohere.user_matching(random_user_id, user_type)
-  print(f"Matchees: {matches}")
+  print(f"Matches: {matches}")
 
