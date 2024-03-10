@@ -1,18 +1,16 @@
 from datetime import datetime
 
 from bson import ObjectId
-from flask import Flask, request, redirect, jsonify, session
+from flask import Flask, request, jsonify
 from flask_cors import CORS
-from user_db_functions import UserDb
+from user_db_functions import UserDB
 from my_cohere import MyCohere
 from chat_db_functions import ChatDb
-from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'bad_secret_key'
-app = CORS(app)
-# socketio = SocketIO(app)
-user_db = UserDb()
+CORS(app)
+
+user_db = UserDB()
 chat_db = ChatDb()
 cohere_ai = MyCohere()
 
@@ -122,3 +120,7 @@ def filter_user_list(user_list):
         else:
             new_user_list.append(user_db.get_email(user))
     return new_user_list
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=8080)

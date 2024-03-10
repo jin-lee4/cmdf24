@@ -113,7 +113,7 @@ class ChatDB(DbFunctions):
 # Testing
 if __name__ == "__main__":
     chatDb = ChatDb()
-    userDb = UserDb()
+    userDb = UserDB()
     user = userDb.get_id("admin")
     chatDb.add_message("hellow world 2", user, user)
     print(chatDb.get_messages(user, user))
