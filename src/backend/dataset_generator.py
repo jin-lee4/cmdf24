@@ -108,7 +108,7 @@ def generate_self_identifications():
     return random.sample(identities, num_identities)
 
 # Generate a dataset of users
-num_users = 50
+num_users = 10
 users_dataset = generate_users_dataset(num_users)
 
 # Print the dataset
