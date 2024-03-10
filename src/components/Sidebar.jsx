@@ -6,17 +6,17 @@ function DashboardPanel() {
   return (
     <section>
       <aside
-        className="fixed top-0 left-0 z-40 w-96 h-screen transition-transform -translate-x-full sm:translate-x-0 min-h-screen mt-8"
+        className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 min-h-screen mt-8"
         aria-label="Sidebar"
       >
-        <div className="h-full px-10 py-4 text-white text-3xl space-y-10">
+        <div className="h-full px-10 py-4 text-white text-2xl space-y-5">
           <a
             href="https://flowbite.com/"
             className="flex items-center ps-2.5 mb-5"
           >
             <Logo />
           </a>
-          <ul className="space-y-2 font-medium text-white space-y-5">
+          <ul className="space-y-2 font-medium text-white">
             <li>
               <a href="#" className="flex items-center p-2">
                 <svg
@@ -86,7 +86,7 @@ function DashboardPanel() {
               </a>
             </li>
             <div className="h-screen">
-              <ul className="bottom-0 space-y-5 font-medium">
+              <ul className="bottom-0 space-y-2 font-medium">
                 <li>
                   <a href="#" className="flex items-center p-2">
                     <svg
