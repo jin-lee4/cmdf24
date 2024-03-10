@@ -75,6 +75,17 @@ class UserDB(DbFunctions):
         user = self.userCollection.find_one({"_id": id})
         return user["name"].split()[0]
 
+    def update_self_identification(self, user_id, self_id):
+        """
+
+        """
+        try:
+            self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {"self-idenfication": self_id}})
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
     def make_mentor_profile(self, user_id, preferences):
         """
         Function that creates mentor profile for given used id
@@ -140,6 +151,9 @@ class UserDB(DbFunctions):
             col = self.menteeProfiles
         try:
             user = col.find_one({"_id": id})
+            user_identify = self.userCollection.find_one({"_id": id})
+            if user_identify is None:
+                return user["preferences"]
             return user["preferences"] + user["self identification"]
         except pymongo.errors.OperationFailure:
             print(
