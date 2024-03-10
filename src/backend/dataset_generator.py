@@ -131,5 +131,6 @@ if __name__ == "__main__":
         if interests:
             user_db.make_mentee_profile(user_db.get_id(email), interests)
         if self_identifications:
-            user_db.update_self_identification(user_db.get_id(email), self_identifications)
-
+            user_db.add_field(user_db.get_id(email), "self identifications", self_identifications)
+        if social_media_links:
+            user_db.add_field(user_db.get_id(email), "social media", social_media_links)
