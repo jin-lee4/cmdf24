@@ -75,12 +75,37 @@ class UserDB(DbFunctions):
         user = self.userCollection.find_one({"_id": id})
         return user["name"].split()[0]
 
+    def get_email(self, id):
+        """
+        function that returns email of user with given id
+        :param id: ObjectId of user
+        :return: String
+        """
+        user = self.userCollection.find_one({"_id": id})
+        return user["email"]
+
     def update_self_identification(self, user_id, self_id):
         """
-
+        updates self_identification field, adds if doesn't exist
+        :param user_id: ObjectId of user
+        :param self_id: self identification (List)
+        :return: None
         """
         try:
             self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {"self-idenfication": self_id}})
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+    def add_field(self, user_id, name, field):
+        """
+        adds field to user, updates it if already exists
+        :param user_id: ObjectId of user
+        :param name: name of field
+        :param field: field value
+        """
+        try:
+            self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {name: field}})
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
