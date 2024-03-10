@@ -1,0 +1,11 @@
+.panel {
+
+    width: 175px;
+    height: 211px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    border-bottom: 54px solid #E8E9F9;
+    background: url(<path-to-image>), lightgray 0px -5.667px / 100% 110.585% no-repeat;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+}
