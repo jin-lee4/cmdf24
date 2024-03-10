@@ -14,7 +14,7 @@ class MyCohere:
   """
   def __init__(self):
     self.co = cohere.Client(os.environ.get('COHERE_KEY'))
-    self.chatDB = ChatDb()
+    self.chatDB = ChatDB()
     self.userDB = UserDB()
 
   def summarize_chat(self, sender_id: ObjectId, recipient_id: ObjectId, date_from: datetime=None, date_to: datetime=None) -> str:
