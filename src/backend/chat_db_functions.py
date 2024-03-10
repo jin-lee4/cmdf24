@@ -6,7 +6,7 @@ import sys
 from bson import ObjectId
 
 from DbFunctions import DbFunctions
-from user_db_functions import UserDb
+from user_db_functions import UserDB
 class ChatDb(DbFunctions):
     """
     Class to handle interactions with messages database
