@@ -1,5 +1,6 @@
 import random
 import string
+from user_db_functions import *
 
 # Function to generate a paragraph of text for specialties
 def generate_specialties_paragraph():
@@ -68,7 +69,6 @@ def generate_random_location():
     country = random.choice(countries)
     return f"{state}, {country}"
 
-# Function to generate the dataset
 def generate_users_dataset(num_users):
     dataset = []
     for i in range(num_users):
@@ -82,15 +82,35 @@ def generate_users_dataset(num_users):
         specialties = generate_specialties_paragraph() if random.random() > 0.5 else None
         interests = generate_interests_paragraph() if random.random() > 0.5 else None
         
+        # Ensure that every user has at least one of specialty or interest
+        if not specialties and not interests:
+            if random.random() > 0.5:
+                specialties = generate_specialties_paragraph()
+            else:
+                interests = generate_interests_paragraph()
+        
         user_data = (user_id_email, [password, first_name, last_name, profile_pic, location, social_media_links, specialties, interests])
         dataset.append(user_data)
     return dataset
 
-# Generate a dataset of 10 users
-num_users = 10
+
+# Generate a dataset of users
+num_users = 100
 users_dataset = generate_users_dataset(num_users)
 
 # Print the dataset
 for user_data in users_dataset:
     print(user_data)
 
+if __name__ == "__main__":
+    user_db = UserDB()
+    for user_data in users_dataset:
+        user_id_email, data = user_data
+        password, first_name, last_name, profile_pic, location, social_media_links, specialties, interests = data
+        name = f"{first_name} {last_name}"
+        email = user_id_email
+        user_db.add_user(name, email, password)
+        if specialties:
+            user_db.make_mentor_profile(user_db.get_id(email), specialties)
+        if interests:
+            user_db.make_mentee_profile(user_db.get_id(email), interests)
