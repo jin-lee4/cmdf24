@@ -6,7 +6,7 @@ import sys
 from bson import ObjectId
 
 from DbFunctions import DbFunctions
-from user_db_functions import UserDB
+from user_db_functions import UserDb
 class ChatDb(DbFunctions):
     """
     Class to handle interactions with messages database
@@ -14,6 +14,7 @@ class ChatDb(DbFunctions):
     def __init__(self):
         super().__init__()
         self.messages = self.db["messages"]
+        self.chats = self.db["chats"]
 
     def add_message(self, message, msg_from, msg_to):
         """
@@ -32,6 +33,35 @@ class ChatDb(DbFunctions):
                     "message_dateTime": datetime.now()
                 }
             )
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
+    def make_new_chat(self, mentor, mentee):
+        """
+        creates a new chat between mentor and mentee
+        :param mentor: ObjectId of mentor
+        :param mentee: ObjetcId of mentee
+        :return: None
+        """
+        self.chats.insert_one(
+            {
+                "mentor": mentor,
+                "mentee": mentee
+            }
+        )
+
+    def add_summary(self, mentor, mentee, summary):
+        """
+        adds summary to chat between given mentor and mentee
+        :param mentor: mentor ObjectId
+        :param mentee: mentee ObjectId
+        :param summary: String
+        :return: None
+        """
+        try:
+            self.chats.find_one_and_update({"mentor": mentor, "mentee": mentee}, {"$addToSet": {"summaries": summary}})
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
@@ -64,10 +94,26 @@ class ChatDb(DbFunctions):
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
+    def get_summaries(self, mentee):
+        """
+        returns all summaries for a given user
+        :param mentee: ObjectId of user
+        :return: List[String]
+        """
+        try:
+            summaries = self.chats.find({"mentee": mentee}, {"summaries": 1, "_id": 0})
+            return summaries
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
+
+
 # Testing
 if __name__ == "__main__":
     chatDb = ChatDb()
-    userDb = UserDB()
+    userDb = UserDb()
     user = userDb.get_id("admin")
     chatDb.add_message("hellow world 2", user, user)
     print(chatDb.get_messages(user, user))
