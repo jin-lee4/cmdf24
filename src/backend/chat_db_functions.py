@@ -38,7 +38,7 @@ class ChatDb(DbFunctions):
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
-    def get_messages(self, message_from, message_to):
+    def get_messages(self, message_from, message_to, from_date=None, to_date=datetime.now()):
         """
         gets all chat between two users
         :param message_from: ObjectId of user who sent msg
@@ -50,10 +50,15 @@ class ChatDb(DbFunctions):
             allMsg = self.messages.find({
                 "message_from": message_from,
                 "message_to": message_to
-            }).sort("message_dateTime")
+            })
             if allMsg:
                 for message in allMsg:
-                    messages.append(message["message"])
+                    append = True
+                    if from_date is not None:
+                        if not (from_date <= message["message_dateTime"] <= to_date):
+                            append = False
+                    if append:
+                        messages.append(message["message"])
             return messages
         except pymongo.errors.OperationFailure:
             print(
@@ -65,4 +70,6 @@ if __name__ == "__main__":
     chatDb = ChatDb()
     userDb = UserDB()
     user = userDb.get_id("admin")
+    chatDb.add_message("hellow world 2", user, user)
     print(chatDb.get_messages(user, user))
+    print(chatDb.get_messages(user, user, datetime(2024, 2, 1)))

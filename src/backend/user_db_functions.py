@@ -99,3 +99,9 @@ class UserDB(DbFunctions):
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
+
+
+if __name__ == "__main__":
+    user = UserDB()
+    id = user.get_id("admin")
+    user.make_mentor_profile(id, ["<NAME>", "<NAME>", "<NAME>", "<NAME>"])
