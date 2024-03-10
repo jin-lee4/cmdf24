@@ -75,7 +75,7 @@ class MyCohere:
     - matches (list): a list of matches (user_id) based on the user type & preferences
     """
     # Get the preferences of the user
-    user_preferences = self.userDB.get_preferences(user_id)
+    user_preferences = self.userDB.get_preferences(user_id, user_type)
     
     # Initialize an empty list to store the matches
     matches = []
@@ -83,7 +83,7 @@ class MyCohere:
     # If the user is a mentor
     if user_type == "mentor":
         # Get list of mentees
-        mentees_list = self.userDB.get_all_mentees()
+        mentees_list = self.userDB.get_profiles("mentee")
         for mentee in mentees_list:
             # Get the preferences of the mentee
             mentee_preferences = self.userDB.get_preferences(mentee["_id"])
@@ -94,7 +94,7 @@ class MyCohere:
     # If the user is a mentee
     elif user_type == "mentee":
         # Get all mentors
-        mentors = self.userDB.get_all_mentors()
+        mentors = self.userDB.get_profiles("mentor")
         # Iterate over all mentors
         for mentor in mentors:
             # Get the preferences of the mentor
