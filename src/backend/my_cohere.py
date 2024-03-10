@@ -28,8 +28,10 @@ class MyCohere:
     """
     # Extract text from database based on specified date range
     messages_list = self.chatDB.get_messages(sender_id, recipient_id, from_date=date_from, to_date=date_to)
+    print(f"Messages list: {messages_list}")
     # Concatenate all messages into a single string
-    chat_text = " ".join([message["message"] for message in messages_list])
+    
+    chat_text = " ".join(messages_list)
     # Call the summarize method from the cohere client
     response = self.co.summarize(text=chat_text, length="medium", format="bullets", extractiveness="auto" )
     # Extract the summarized text from the response tuple (id, summarised text, meta)
@@ -134,26 +136,51 @@ class MyCohere:
    
 # TESTING
 if __name__ == "__main__":
-  my_cohere = MyCohere()
-  mongo = UserDB()
+    my_cohere = MyCohere()
+    mongo = UserDB()
 
-  # # test summarize chat function
-  # summary_text = my_cohere.summarize_chat(sample_text, date_range="last 7 days")
-  # print(summary_text)
+    # # Add users
+    # mongo.add_user("Nadia R", 'nadiar@gmail.com', 'password')
+    # mongo.add_user("John Doe", 'johnd@gmail.com', 'password')
 
-  # # test create suggested text function
-  # last_message = "I am Nadia, a final year computer science student and I am interested in AI. I would love to chat with you as a mentee."
-  # suggested_response = my_cohere.create_suggested_text(last_message, sender="mentor", recipient="mentee", sender_name="John", recipient_name="Nadia")
-  # print(suggested_response)
+    # # Get user ObjectIds
+    # user_nadia_id = mongo.get_id("nadiar@gmail.com")
+    # user_john_id = mongo.get_id("johnd@gmail.com")
 
-  # test user matching function
-  # Get all user profiles
-  user_profiles = mongo.get_profiles("mentor")
+    # # Add fake messages between users to simulate a conversation
+    # chat_db = ChatDb()
+    # messages = [
+    #     ("Hello, John. I'm excited to start our mentoring session today.", user_nadia_id,  user_john_id),
+    #     ("Hi Nadia! I'm looking forward to it as well.",  user_john_id, user_nadia_id),
+    #     ("I wanted to discuss a project I'm working on. Can I get your advice?", user_nadia_id,  user_john_id),
+    #     ("Of course, I'd be happy to help. Tell me more about the project.",  user_john_id, user_nadia_id),
+    #     ("It involves integrating a third-party API, and I'm stuck on the implementation details.", user_nadia_id,  user_john_id),
+    #     ("Let's brainstorm together. One approach could be to decouple the API integration logic from the rest of your application using a service or adapter pattern.",  user_john_id, user_nadia_id),
+    #     ("That makes sense. I'll look into implementing the service pattern for this feature. Thank you for the suggestion!", user_nadia_id,  user_john_id),
+    #     ("You're welcome! If you have any more questions, feel free to ask.",  user_john_id, user_nadia_id)
+    # ]
 
-  # Select a random user_id from user_profiles
-  random_user_id = random.choice(user_profiles)
-  # print(mongo.get_preferences(random_user_id, "mentor"))
-  user_type = "mentor"
-  matches = my_cohere.user_matching(random_user_id, user_type)
-  print(f"Matches: {matches}")
+    # for message_text, sender, recipient in messages:
+    #     chat_db.add_message(message_text, sender, recipient)
+
+  
+    # # # test summarize chat function
+    # summary = my_cohere.summarize_chat(user_nadia_id, user_john_id)
+    # print(f"Chat summary between {user_nadia_id} and {user_john_id}: {summary}")
+
+      # Get all user profiles
+    user_profiles = mongo.get_profiles("mentor")
+
+    # Select a random user_id from user_profiles
+    random_user_id = random.choice(user_profiles)
+    random_user_id2 = random.choice(user_profiles)
+
+    # test create suggested text function
+    # ???
+
+    # test user matching function
+    print(mongo.get_preferences(random_user_id, "mentor"))
+    user_type = "mentor"
+    matches = my_cohere.user_matching(random_user_id, user_type)
+    print(f"Matches: {matches}")
 
