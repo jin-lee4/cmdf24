@@ -1,5 +1,6 @@
 import pymongo
 import sys
+
 from DbFunctions import DbFunctions
 
 class UserDB(DbFunctions):
@@ -109,8 +110,45 @@ class UserDB(DbFunctions):
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
+    def get_profiles(self, type):
+        """
+        Function that gets all mentor/mentee profiles
+        :param type: String; either "mentor" or "mentee".
+        """
+        if type == "mentor":
+            col = self.mentorProfiles
+        else:
+            col = self.menteeProfiles
+        try:
+            profiles = col.distinct("_id", {})
+            return profiles
+        except pymongo.error.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
+
+    def get_preferences(self, id, type):
+        """
+        gets preferences of user
+        :param id: ObjectId of user
+        :param type: String; either "mentor" or "mentee"
+        :return: List[String] List of preferences
+        """
+        if type == "mentor":
+            col = self.mentorProfiles
+        else:
+            col = self.menteeProfiles
+        try:
+            user = col.find_one({"_id": id})
+            return user["preferences"]
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
 
 if __name__ == "__main__":
     user = UserDB()
     id = user.get_id("admin")
-    user.make_mentor_profile(id, ["<NAME>", "<NAME>", "<NAME>", "<NAME>"])
+    print(user.get_profiles("mentor"))
