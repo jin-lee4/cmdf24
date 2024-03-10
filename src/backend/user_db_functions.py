@@ -1,5 +1,6 @@
 import pymongo
 import sys
+
 from DbFunctions import DbFunctions
 
 class UserDB(DbFunctions):
@@ -8,10 +9,9 @@ class UserDB(DbFunctions):
     """
     def __init__(self):
         super().__init__()
-        self.userDb = self.client.userInfo
-        self.userCollection = self.userDb["users"]
-        self.mentorProfiles = self.userDb["mentorProfiles"]
-        self.menteeProfiles = self.userDb["menteeProfiles"]
+        self.userCollection = self.db["users"]
+        self.mentorProfiles = self.db["mentorProfiles"]
+        self.menteeProfiles = self.db["menteeProfiles"]
 
     def add_user(self, name, email, password):
         """
@@ -96,7 +96,7 @@ class UserDB(DbFunctions):
         """
         Function that creates mentee profile for given user id
         :param user_id: ObjectId
-        :param preferences: List of preferences
+        :param preferences: preferences
         :return: None
         """
         try:
@@ -109,8 +109,45 @@ class UserDB(DbFunctions):
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
+    def get_profiles(self, type):
+        """
+        Function that gets all mentor/mentee profiles
+        :param type: String; either "mentor" or "mentee".
+        """
+        if type == "mentor":
+            col = self.mentorProfiles
+        else:
+            col = self.menteeProfiles
+        try:
+            profiles = col.distinct("_id", {})
+            return profiles
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
+
+    def get_preferences(self, id, type):
+        """
+        gets preferences of user
+        :param id: ObjectId of user
+        :param type: String; either "mentor" or "mentee"
+        :return: preferences
+        """
+        if type == "mentor":
+            col = self.mentorProfiles
+        else:
+            col = self.menteeProfiles
+        try:
+            user = col.find_one({"_id": id})
+            return user["preferences"] + user["self identification"]
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
 
 if __name__ == "__main__":
     user = UserDB()
-    id = user.get_id("admin")
-    user.make_mentor_profile(id, ["<NAME>", "<NAME>", "<NAME>", "<NAME>"])
+    user.add_user("user1", "<EMAIL>", "passwrod")
+    print(user.get_profiles("mentor"))

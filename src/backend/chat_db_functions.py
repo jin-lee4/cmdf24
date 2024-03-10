@@ -13,8 +13,7 @@ class ChatDb(DbFunctions):
     """
     def __init__(self):
         super().__init__()
-        self.chatDb = self.client.messagesDb
-        self.messages = self.chatDb["messages"]
+        self.messages = self.db["messages"]
 
     def add_message(self, message, msg_from, msg_to):
         """
