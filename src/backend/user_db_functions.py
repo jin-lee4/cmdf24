@@ -9,10 +9,9 @@ class UserDB(DbFunctions):
     """
     def __init__(self):
         super().__init__()
-        self.userDb = self.client.userInfo
-        self.userCollection = self.userDb["users"]
-        self.mentorProfiles = self.userDb["mentorProfiles"]
-        self.menteeProfiles = self.userDb["menteeProfiles"]
+        self.userCollection = self.db["users"]
+        self.mentorProfiles = self.db["mentorProfiles"]
+        self.menteeProfiles = self.db["menteeProfiles"]
 
     def add_user(self, name, email, password):
         """
@@ -97,7 +96,7 @@ class UserDB(DbFunctions):
         """
         Function that creates mentee profile for given user id
         :param user_id: ObjectId
-        :param preferences: List of preferences
+        :param preferences: preferences
         :return: None
         """
         try:
@@ -122,7 +121,7 @@ class UserDB(DbFunctions):
         try:
             profiles = col.distinct("_id", {})
             return profiles
-        except pymongo.error.OperationFailure:
+        except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
@@ -133,7 +132,7 @@ class UserDB(DbFunctions):
         gets preferences of user
         :param id: ObjectId of user
         :param type: String; either "mentor" or "mentee"
-        :return: List[String] List of preferences
+        :return: preferences
         """
         if type == "mentor":
             col = self.mentorProfiles
@@ -141,7 +140,7 @@ class UserDB(DbFunctions):
             col = self.menteeProfiles
         try:
             user = col.find_one({"_id": id})
-            return user["preferences"]
+            return user["preferences"] + user["self identification"]
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
@@ -150,5 +149,5 @@ class UserDB(DbFunctions):
 
 if __name__ == "__main__":
     user = UserDB()
-    id = user.get_id("admin")
+    user.add_user("user1", "<EMAIL>", "passwrod")
     print(user.get_profiles("mentor"))
