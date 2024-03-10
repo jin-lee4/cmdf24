@@ -1,0 +1,18 @@
+.panel {
+    border-radius: 32px 0px 0px 32px;
+    background: #EFF3FA;
+    width: 785px;
+    height: 832px;
+    align-items: center;
+}
+
+.loginheading {
+    color: var(--dark);
+    text-align: center;
+    font-family: "DM Sans", sans-serif;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 135px;
+}
