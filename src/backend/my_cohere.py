@@ -73,6 +73,7 @@ class MyCohere:
     
     Returns:
     - matches (list): a list of matches (user_id) based on the user type & preferences
+                      mentee's interests match with mentor's specialties
     """
     # Get the preferences of the user
     user_preferences = self.userDB.get_preferences(user_id, user_type)
@@ -85,21 +86,21 @@ class MyCohere:
         # Get list of mentees
         mentees_list = self.userDB.get_profiles("mentee")
         for mentee in mentees_list:
-            # Get the preferences of the mentee
+            # Get the interest of the mentee string
             mentee_preferences = self.userDB.get_preferences(mentee["_id"])
-            # add the mentee id and their preferences to a dictionary
+            # add the mentee id and their interests to a dictionary
             user_dict = {"id": mentee["_id"], "preferences": mentee_preferences}
 
     
     # If the user is a mentee
     elif user_type == "mentee":
-        # Get all mentors
+        # Get list of all mentors
         mentors = self.userDB.get_profiles("mentor")
         # Iterate over all mentors
         for mentor in mentors:
-            # Get the preferences of the mentor
+            # Get the specialty of the mentor (string)
             mentor_preferences = self.userDB.get_preferences(mentor["_id"])
-            # add the mentor id and their preferences to a dictionary
+            # add the mentor id and their specialties to a dictionary
             user_dict = {"id": mentor["_id"], "preferences": mentor_preferences}
 
     prompt = f"Based on the preferences of the user {user_preferences}, please find a couple of matches from {user_dict}. Stricly return a list of user ids only."
