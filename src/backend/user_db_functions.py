@@ -10,6 +10,8 @@ class UserDB(DbFunctions):
     def __init__(self):
         super().__init__()
         self.userCollection = self.db["users"]
+        self.mentorProfiles = self.db["mentorProfiles"]
+        self.menteeProfiles = self.db["menteeProfiles"]
 
     def add_user(self, name, email, password):
         """
@@ -73,6 +75,15 @@ class UserDB(DbFunctions):
         user = self.userCollection.find_one({"_id": id})
         return user["name"].split()[0]
 
+    def get_email(self, id):
+        """
+        function that returns email of user with given id
+        :param id: ObjectId of user
+        :return: String
+        """
+        user = self.userCollection.find_one({"_id": id})
+        return user["email"]
+
     def update_self_identification(self, user_id, self_id):
         """
         updates self_identification field, adds if doesn't exist
@@ -86,7 +97,6 @@ class UserDB(DbFunctions):
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
-
     def add_field(self, user_id, name, field):
         """
         adds field to user, updates it if already exists
@@ -109,10 +119,13 @@ class UserDB(DbFunctions):
         :return: None
         """
         try:
-            self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {"specialties": preferences}})
+            self.mentorProfiles.insert_one({
+                "_id": user_id,
+                "specialties": preferences
+            })
         except pymongo.errors.OperationFailure:
             print(
-                    "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
     def make_mentee_profile(self, user_id, preferences):
@@ -123,11 +136,13 @@ class UserDB(DbFunctions):
         :return: None
         """
         try:
-            self.userCollection.find_one_and_update({"_id": user_id}, {"$set": {"interests": preferences}})
+            self.menteeProfiles.insert_one({
+                "_id": user_id,
+                "interests": preferences
+            })
         except pymongo.errors.OperationFailure:
             print(
-                "An authentication error was received. Are you sure your database user is authorized to perform write operations?"
-            )
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
     def get_profiles(self, type):
@@ -136,17 +151,40 @@ class UserDB(DbFunctions):
         :param type: String; either "mentor" or "mentee".
         """
         if type == "mentor":
-            string = "specialties"
+            col = self.mentorProfiles
         else:
-            string = "interests"
+            col = self.menteeProfiles
         try:
-            profiles = self.userCollection.distinct("_id", {string: {"$ne": None}})
+            profiles = col.distinct("_id", {})
             return profiles
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
             sys.exit(1)
 
+    def pair_up(self, user_id, id, type):
+        if type == "mentor":
+            str = "mentors"
+        else:
+            str = "mentees"
+        try:
+            self.userCollection.find_one_and_update({"_id": user_id}, {"$addToSet": {str: id}})
+        except pymongo.errors.OperationFailure:
+            print(
+                "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
+            sys.exit(1)
+
+    def get_all_pairs(self, user_id, pair_type):
+        if pair_type == "mentor":
+            str = "mentors"
+        else:
+            str = "mentees"
+        try:
+            user = self.userCollection.find_one({"_id": user_id})
+            return user[str]
+        except pymongo.errors.OperationFailure:
+            print("Error.")
+            sys.exit(1)
 
     def get_preferences(self, id, type):
         """
@@ -156,21 +194,14 @@ class UserDB(DbFunctions):
         :return: preferences
         """
         if type == "mentor":
-            string = "specialties"
+            col = self.mentorProfiles
+            preferences_field = "specialties"
         else:
-            string = "interests"
+            col = self.menteeProfiles
+            preferences_field = "interests"
         try:
-            user = self.userCollection.find_one({"_id": id})
-            user_identify = user["self identification"]
-            user_preference = user[string]
-            if user_identify is None and user_preference is None:
-                return ""
-            elif user_preference is None:
-                return user_identify
-            elif user_identify is None:
-                return user_preference
-            else:
-                return user_preference + user_identify
+            user = col.find_one({"_id": id})
+            return user.get(preferences_field)
         except pymongo.errors.OperationFailure:
             print(
                 "An authentication error was received. Are you sure your database user is authorized to perform write operations?")
@@ -180,4 +211,5 @@ class UserDB(DbFunctions):
 
 if __name__ == "__main__":
     user = UserDB()
+    user.add_user("user1", "<EMAIL>", "passwrod")
     print(user.get_profiles("mentor"))
