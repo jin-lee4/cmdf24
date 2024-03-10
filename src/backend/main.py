@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from bson import ObjectId
 from flask import Flask, request, jsonify
@@ -89,7 +89,7 @@ def get_messages():
     data = request.get_json()
     from_id = user_db.get_id(data.get('email'))
     to_id = user_db.get_id(data.get('to email'))
-    messages = chat_db.get_messages(from_id, to_id, datetime.now() - 7)
+    messages = chat_db.get_messages(from_id, to_id, datetime.now() - timedelta(7))
     return jsonify({"messages": messages})
 
 @app.route("/api/sent-message", methods=['POST'])
