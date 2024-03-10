@@ -66,6 +66,15 @@ class UserDB(DbFunctions):
         user = self.userCollection.find_one({"email": email})
         return user["_id"]
 
+    def get_name(self, id):
+        """
+        Function that returns name of user with given id
+        :param id: ObjectId
+        :return: String
+        """
+        user = self.userCollection.find_one({"_id": id})
+        return user["name"].split()[0]
+
     def make_mentor_profile(self, user_id, preferences):
         """
         Function that creates mentor profile for given used id
