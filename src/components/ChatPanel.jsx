@@ -4,8 +4,8 @@ import ChatPreview from "@/components/ChatPreview";
 
 function ChatPanel() {
   return (
-    <section className="py-10 px-7 fixed top-0 right-0">
-      <div className="flex justify-end space-x-4">
+    <section className="py-10 fixed top-0 right-0">
+      <div className="flex justify-end px-10 space-x-4">
         <div className="space-y-2">
           <h3 className={styles.profilename}>Your Name</h3>
           <p className={styles.profile}>Your Profile</p>
@@ -18,10 +18,10 @@ function ChatPanel() {
           ></Image> */}
         </div>
       </div>
-      <div className="my-9 space-y-7 justify-start min-w-full">
+      <div className="my-5 space-y-7 justify-start px-5 w-80">
         <h2 className={styles.heading}>Recent Chats</h2>
         <div className="">
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div className="flex space-x-56">
               <h3 className={styles.secondaryheading}>Mentors</h3>
               <svg
@@ -40,7 +40,7 @@ function ChatPanel() {
             <ChatPreview />
           </div>
         </div>
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div className="flex space-x-56">
             <h3 className={styles.secondaryheading}>Mentees</h3>
             <svg

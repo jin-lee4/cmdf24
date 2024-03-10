@@ -6,8 +6,8 @@ import sys
 from bson import ObjectId
 
 from DbFunctions import DbFunctions
-from user_db_functions import UserDb
-class ChatDb(DbFunctions):
+from user_db_functions import UserDB
+class ChatDB(DbFunctions):
     """
     Class to handle interactions with messages database
     """
@@ -113,7 +113,7 @@ class ChatDb(DbFunctions):
 # Testing
 if __name__ == "__main__":
     chatDb = ChatDb()
-    userDb = UserDb()
+    userDb = UserDB()
     user = userDb.get_id("admin")
     chatDb.add_message("hellow world 2", user, user)
     print(chatDb.get_messages(user, user))
