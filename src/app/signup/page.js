@@ -1,4 +1,4 @@
-import styles from "../app/styles/loginpanel.module.css";
+import styles from "../styles/loginpanel.module.css";
 
 function SignupPanel() {
   return (

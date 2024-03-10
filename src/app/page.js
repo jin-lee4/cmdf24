@@ -1,17 +1,13 @@
 'use client';
 
 import Image from "next/image";
-import logo from "../../public/logo.svg";
-
+import Logo from '../components/Logo';
 
 export default function Home() {
   return (
     <main className="min-h-screen">
       <div className="header min-w-screen flex justify-between my-5 mx-5">
-        <div className="logo flex">
-          <Image src={logo}></Image>
-          <h1 className="logo-text">rbit</h1>
-        </div>
+        <Logo />
         <span className="">
           <button>Log In</button>
         </span>
